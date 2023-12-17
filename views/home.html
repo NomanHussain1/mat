@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Harvest</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="./css/mdb.min.css" />
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="./assest/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+</head>
+<body>
+<!-----frontend-->
+<!---banneradd-->
+<div class="container-fluid">
+  <div class="row ad">
+    <div class="col-lg-12">
+      <div class="">
+       <h2>Banner Ad Area</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<!---banneradd-->
+<!---menu-and-logo-->
+<div class="container-fluid">
+  <div class="row logo-head">
+    <div class="col-lg-3">
+      <div class="logo">
+        <a href="#">
+          <img src="./assest/logo.jpg" alt="logo">
+         </a>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="search-product-box">
+        <form class="d-flex" role="search">
+          <input class="form-control me-2 search-main" type="search" placeholder="Enter Products" aria-label="Search" id="SEARCH1">
+          <button class="btn btn-outline-success main-sch-btn" type="submit" id="search-btn">Search</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="zip-bar-box">
+        <form class="d-flex" role="search" id="searchForm">
+          <input class="form-control me-2" type="search" placeholder="Enter Zip Code" aria-label="Search" id="zipCodeInput">
+          <button class="btn btn-outline-success main-sch-btn" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!---menu-and-logo-->
+<!--main-content---->
+<div class="container-fluid">
+  <div class="row main-pro">
+    <div class="col-lg-8">
+      <div class="main-product-all">
+        <div id="result-container">
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 cart-stl">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <ul id="cart">  </ul>
+    </div>
+  </div>
+</div>
+<!--main-content--->
+<!--footer----->
+<section id="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="footer">
+        <p>Website is updated as price changes occur.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--footer-->
+<!------frontend-->
+<script>
+  // jQuery code for handling the AJAX request
+$(document).ready(function() {
+    // Event handler for the button click
+    $("#search-btn").click(function(event) {
+        // Prevent the default button behavior (form submission, page reload)
+        event.preventDefault();
+
+        // AJAX request using jQuery
+        $.ajax({
+            url: "http://localhost:3000/api/products/search?zipcode=1&nameproducts=" + $('.search-main').val(),
+            method: "GET",
+            dataType: "json",
+            success: function(data) {
+                // Callback function to handle the successful response
+                console.log("Data received:", data);
+
+                // Display the received data in a specific HTML element
+                displayData(data.data);
+
+                // Add "Add to Cart" functionality
+                addAddToCartFunctionality();
+            },
+            error: function(xhr, status, error) {
+                // Callback function to handle errors
+                console.error("AJAX request failed. Status:", status, "Error:", error);
+            }
+        });
+    });
+
+    // Function to display the received data in the result container
+    function displayData(data) {
+        // You can customize this based on how you want to display the data
+        var resultContainer = $("#result-container");
+        resultContainer.empty(); // Clear previous content
+
+        // Assuming 'data' is an array, you can iterate through it
+        for (var i = 0; i < data.length; i++) {
+            // Create a new div for each item
+            var itemDiv = $("<div>");
+
+            // Append each item to the new div
+            itemDiv.append(
+                "<p>title: " + data[i].title + "</p>" +
+                "<p>Prices: " + data[i].prices + "</p>" +
+                "<p>Website: " + data[i].website + "</p>" +
+                "<button class='add-to-cart-btn' data-id='" + data[i].Id + "' data-name='" + data[i].title + "' data-price='" + data[i].prices + "'>Add to Cart</button>"
+            );
+
+            // Append the new div to the result container
+            resultContainer.append(itemDiv);
+        }
+    }
+
+    // Function to add "Add to Cart" functionality
+    function addAddToCartFunctionality() {
+
+        // Event delegation to handle the click on "Add to Cart" buttons
+        $("#result-container").on('click', '.add-to-cart-btn', function() {
+            addToCart($(this).data());
+        });
+    }
+
+
+// Function to add a product to the cart
+function addToCart(productData) {
+    const productId = productData.id;
+    const productName = productData.name;
+    const productPrice = parseFloat(productData.price);
+
+
+    if (productids.includes(productId)) {
+      
+        return;
+    }
+    productids.push(productId);
+    
+    // Create a new cart item element
+    var cartItem = $("<li>").html(`
+        <span class="product-name">${productName}</span> 
+        - <span class="product-price">$${productPrice.toFixed(2)}</span> 
+        <button class="remove-btn">Remove</button>
+        <i class="fa-solid fa-arrow-up"></i><i class="fa-solid fa-arrow-down"></i>
+    `);
+    cartItem.addClass("cart-item");
+
+    // Append the new cart item to the cart
+    $("#cart").append(cartItem);
+}
+
+const productids = [];
+
+
+// Function to remove an item from the cart
+$("#cart").on('click', '.remove-btn', function() {
+  alert("Are you sure you want to remove");
+    $(this).parent().remove();
+});
+
+// Initialize "Add to Cart" functionality
+addAddToCartFunctionality();   
+});
+
+function postData(productData) {
+        
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/api/products/post1',
+            data: JSON.stringify(productData),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('POST request successful:', response);
+                // Handle success response here
+            },
+            error: function(error) {
+                console.error('POST request failed:', error);
+                // Handle error response here
+            }
+        });
+    }
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Get references to the input fields and the forms
+  var zipCodeInput = document.getElementById("zipCodeInput");
+  var productSearchInput = document.getElementById("SEARCH1");
+  var searchForm = document.getElementById("searchForm");
+  var productSearchButton = document.getElementById("search-btn");
+
+  // Disable the product search input and button initially
+  productSearchInput.disabled = true;
+  productSearchButton.disabled = true;
+
+  // Add an event listener to the form submission
+  searchForm.addEventListener("submit", function (event) {
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Enable the product search input and button after the form is submitted
+    productSearchInput.disabled = false;
+    productSearchButton.disabled = false;
+  });
+
+  // Add an event listener to the zip code input field
+  zipCodeInput.addEventListener("input", function () {
+    // Disable the product search input and button while the user is typing the zip code
+    productSearchInput.disabled = true;
+    productSearchButton.disabled = true;
+  });
+});  
+
+
+
+    
+
+
+</script>
+
+
+</body>
+</html>

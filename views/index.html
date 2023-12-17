@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="./assest/login.css">
+</head>
+<body>
+    <form action="home.html" class="box" method="post">
+        <h1>Harvest</h1>
+        <input type="password" placeholder="password" id="pswd">
+        <input type="button" value="Submit" onclick="checkPswd();" class="confirm" />
+    </form>
+
+<!--Function to check password the already set password is admin-->
+<script type="text/javascript">
+    function checkPswd() {
+        var confirmPassword = "admin";
+        var password = document.getElementById("pswd").value;
+        if (password == confirmPassword) {
+             window.location="file:///C:/harvest/views/home.html";
+        window.location="home.html";
+        }
+        else{
+            alert("Passwords do not match.");
+        }
+    }
+</script>
+</body>
+</html>
+  
